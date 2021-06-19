@@ -1,6 +1,10 @@
 import speech_recognition as sr
 from gtts import gTTS
 import os
+import requests
+import json
+
+
 
 
 def reconize_voice():
@@ -25,11 +29,43 @@ def speak(text):
 	output.save('last_output.mp3')
 	os.system('cvlc --play-and-exit last_output.mp3')
 
+def get_meteo_day(ville):
+	url_weather = "http://api.openweathermap.org/data/2.5/weather?q="+ville+",fr&APPID=beb97c1ce62559bba4e81e28de8be095"
+
+	r_weather = requests.get(url_weather)
+	data = r_weather.json()
+
+	try:
+		t = data['main']['temp']       
+		speak("La température moyenne est de {} degrés Celsius".format(round(t-273.15)))
+		
+		t_min = data['main']['temp_min']
+		t_max = data['main']['temp_max']
+		speak("Les températures varient entre {}".format(round(t_min-273.15)) + " a {} degrés Celsius".format(round(t_max-273.15)))
+		
+		humidite = data['main']['humidity']
+		speak("Taux d'humidité de {}".format(humidite) + "%")	
+		
+		temps = data['weather'][0]['description']
+		speak("Conditions climatiques : {}".format(temps))
+	except KeyError:
+		speak('nous ne prenons pas en charge cette ville désolé')
+
 run = True
 while run:
 	try:
 		texte = reconize_voice()
 		speak(f"j'ai compris YOUPI vous avez dit : {texte}")
+		if 'météo' in texte:
+			speak('pouvez vous donner le nom de la ville française que vous rechercher')
+			while True:
+				try:
+					ville = reconize_voice()
+					get_meteo_day(ville)
+					break
+				except TypeError:
+					speak('pouvez vous répéter')
+			
 	
 	except TypeError:
 		print('Desoler nous ne pouvons pas faire cela pour le moment')

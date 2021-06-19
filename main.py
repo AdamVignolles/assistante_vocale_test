@@ -51,6 +51,7 @@ def get_meteo_day(ville):
 	except KeyError:
 		speak('nous ne prenons pas en charge cette ville désolé')
 
+print("lancement de l'assistant vocal")
 run = True
 while run:
 	try:

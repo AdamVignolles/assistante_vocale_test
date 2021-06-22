@@ -1,0 +1,1 @@
+/usr/bin/python3 /home/pi/Desktop/python/git/assistante_vocale_test/main.py

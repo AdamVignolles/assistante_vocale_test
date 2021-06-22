@@ -7,6 +7,15 @@ import json
 
 
 
+
+
+def speak(text):
+	mytext = text
+	language = 'fr'
+	output = gTTS(text=mytext, lang=language, slow=False)
+	output.save('last_output.mp3')
+	os.system('cvlc --play-and-exit last_output.mp3')
+
 def reconize_voice():
 	r = sr.Recognizer()
 	with sr.Microphone() as source:
@@ -18,16 +27,9 @@ def reconize_voice():
 			print(f'vous avez dit: {sayed}')
 			return sayed
 		except sr.UnknownValueError:
-			print("Pouvez vous repeter")
+			speak("Pouvez vous repété")
 		except sr.RequestError as e:
-			print('Le service Google API ne fonctione plus'+ format(e))
-
-def speak(text):
-	mytext = text
-	language = 'fr'
-	output = gTTS(text=mytext, lang=language, slow=False)
-	output.save('last_output.mp3')
-	os.system('cvlc --play-and-exit last_output.mp3')
+			speak('Le service Google API ne fonctione plus'+ format(e))
 
 def get_meteo_day(ville):
 	url_weather = "http://api.openweathermap.org/data/2.5/weather?q="+ville+",fr&APPID=beb97c1ce62559bba4e81e28de8be095"
@@ -52,11 +54,12 @@ def get_meteo_day(ville):
 		speak('nous ne prenons pas en charge cette ville désolé')
 
 print("lancement de l'assistant vocal")
+speak('bonjour')
 run = True
 while run:
 	try:
 		texte = reconize_voice()
-		speak(f"j'ai compris YOUPI vous avez dit : {texte}")
+		print(f"j'ai compris YOUPI vous avez dit : {texte}")
 		if 'météo' in texte or 'température' in texte or 'humidité' in texte:
 			speak('pouvez vous donner le nom de la ville française que vous rechercher')
 			while True:
@@ -71,6 +74,15 @@ while run:
 		
 		elif 'mets en ligne' in texte:
 			os.system('bash git_command.sh')
+		
+		elif 'relance' in texte:
+			run = False
+			os.system('bash start.sh')
+
+		elif 'dégage' in texte or 'stop' in texte:
+			run = False
+			speak("aurevoir")
+			break
 			
 	
 	except TypeError:

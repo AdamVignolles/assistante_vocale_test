@@ -1,0 +1,1 @@
+nohup /usr/bin/python3 /home/pi/Desktop/my_bot/bot_discord.py &

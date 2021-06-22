@@ -57,7 +57,7 @@ while run:
 	try:
 		texte = reconize_voice()
 		speak(f"j'ai compris YOUPI vous avez dit : {texte}")
-		if 'météo' in texte:
+		if 'météo' in texte or 'température' in texte or 'humidité' in texte:
 			speak('pouvez vous donner le nom de la ville française que vous rechercher')
 			while True:
 				try:
@@ -66,6 +66,11 @@ while run:
 					break
 				except TypeError:
 					speak('pouvez vous répéter')
+		elif 'lance le robot' in texte:
+			os.system('bash bot_start.sh')
+		
+		elif 'mets en ligne' in texte:
+			os.system('bash git_command.sh')
 			
 	
 	except TypeError:

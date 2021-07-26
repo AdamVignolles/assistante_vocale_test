@@ -1,0 +1,1 @@
+python C:\Users\adamv\OneDrive\Bureau\Desktop\my_bot\bot_discord.py

@@ -1,8 +1,12 @@
 import speech_recognition as sr
 from gtts import gTTS
+from pygame import mixer
 import os
 import requests
+import csv
 import json
+import pyttsx3  
+
 
 
 
@@ -11,10 +15,11 @@ import json
 
 def speak(text):
 	mytext = text
-	language = 'fr'
-	output = gTTS(text=mytext, lang=language, slow=False)
-	output.save('last_output.mp3')
-	os.system('cvlc --play-and-exit last_output.mp3')
+	s = pyttsx3.init()  
+	data = mytext  
+	s.say(data)  
+	s.runAndWait() 
+	
 
 def reconize_voice():
 	r = sr.Recognizer()
@@ -54,17 +59,26 @@ def get_meteo_day(ville):
 		speak('nous ne prenons pas en charge cette ville désolé')
 
 print("lancement de l'assistant vocal")
-speak('bonjour')
+speak('bonjour que puis-je faire pour vous')
 run = True
 while run:
 	try:
 		texte = reconize_voice()
 		print(f"j'ai compris YOUPI vous avez dit : {texte}")
 		if 'météo' in texte or 'température' in texte or 'humidité' in texte:
-			speak('pouvez vous donner le nom de la ville française que vous rechercher')
+			speak('dite le nom de la ville de cette façon, la ville de Paris')
 			while True:
 				try:
 					ville = reconize_voice()
+					if 'ville de' in ville:
+						sentence = []
+						for i in ville:
+							sentence.append(i)
+						for i in sentence:
+							if i == 'ville':
+								index = sentence.index(i)
+								if sentence[i + 1] == 'de':
+									ville = sentence[i + 2]
 					get_meteo_day(ville)
 					break
 				except TypeError:
